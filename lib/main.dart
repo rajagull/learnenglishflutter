@@ -18,7 +18,7 @@ void main() async {
       systemNavigationBarDividerColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.dark,
       systemNavigationBarContrastEnforced: false,
-      statusBarContrastEnforced: false,
+      systemStatusBarContrastEnforced: false,
     ),
   );
 

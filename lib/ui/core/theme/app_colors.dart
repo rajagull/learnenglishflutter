@@ -15,6 +15,7 @@ class AppColors {
   static const Color purple = Color(0xFF7C3AED);
   static const Color coral = Color(0xFFF43F5E);
   static const Color teal = Color(0xFF0D9488);
+  static const Color indigo = Color(0xFF2563EB);
 
   // Crisp High-Contrast Backgrounds & Surfaces
   static const Color bgLight = Color(0xFFF4F6FB); // Cool Pearl Alabaster
