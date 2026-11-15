@@ -1,17 +1,19 @@
-# learnenglishflutter
+# Learn English Pro — Urdu & Hindi English Learning App
 
-Learn English - English learning app for Urdu/Hindi speakers
+## 📥 Download Latest Android APK
+Tap the link below on your Android phone to download and install the latest compiled APK (`learn-english.apk`, 38 MB):
 
-## Getting Started
+- **[📲 Direct Download: `learn-english.apk` (Latest Release Build)](https://raw.githubusercontent.com/rajagull/learnenglishflutter/main/learn-english.apk)**
+- **[📦 View on GitHub (`learn-english.apk`)](https://github.com/rajagull/learnenglishflutter/blob/main/learn-english.apk)**
+- **[🏷️ GitHub Releases Page](https://github.com/rajagull/learnenglishflutter/releases)**
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## ✨ Features
+- **140,000+ English to Urdu & Roman Urdu Dictionary**
+- **AI Voice Speaking Coach** (Live speaking practice & pronunciation feedback)
+- **12 English Tenses Mastery** (Formulas & Urdu examples)
+- **Daily Conversations** (22 topics, 386 real-life dialogues)
+- **2,000+ Idioms & Proverbs** with Urdu meanings
+- **Topic-wise Vocabulary & Singular/Plural Nouns**
+- **Interactive Practice Quizzes**
