@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/glass_card.dart';
+import '../../../core/widgets/premium_scaffold.dart';
 import '../view_models/conversation_view_model.dart';
 import 'conversation_detail_screen.dart';
 
@@ -60,138 +61,142 @@ class _ConversationCategoriesScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Daily Conversations',
-              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
-            ),
-            Text(
-              'روزمرہ انگریزی بول چال',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 12,
-                color: AppColors.urduGreen,
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: ListenableBuilder(
-        listenable: _viewModel,
-        builder: (context, _) {
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: _viewModel.search,
-                  decoration: InputDecoration(
-                    hintText: 'Search situations (Hospital, Airport, ہوائی اڈہ)...',
-                    prefixIcon: const Icon(Icons.search, color: AppColors.sky),
-                    suffixIcon: _searchController.text.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear, size: 18),
-                            onPressed: () {
-                              _searchController.clear();
-                              _viewModel.search('');
-                            },
-                          )
-                        : null,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: _viewModel.isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : _viewModel.filteredCategories.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No conversation topics found',
-                              style: TextStyle(color: AppColors.textLight),
-                            ),
-                          )
-                        : ListView.separated(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                            itemCount: _viewModel.filteredCategories.length,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: 10),
-                            itemBuilder: (context, index) {
-                              final cat = _viewModel.filteredCategories[index];
-                              return GlassCard(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          ConversationDetailScreen(category: cat),
-                                    ),
-                                  );
-                                },
-                                padding: const EdgeInsets.all(14),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 48,
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        gradient: AppColors.conversationGradient,
-                                        borderRadius:
-                                            BorderRadius.circular(14),
-                                      ),
-                                      child: Icon(
-                                        _getCategoryIcon(cat.id - 1),
-                                        color: Colors.white,
-                                        size: 24,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 14),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            cat.englishName,
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
-                                              color: AppColors.textDark,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            cat.urduName,
-                                            style: const TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w600,
-                                              color: AppColors.urduGreen,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const Icon(
-                                      Icons.chevron_right_rounded,
-                                      color: AppColors.textMuted,
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, _) {
+        return PremiumScaffold(
+          title: 'Daily Conversations',
+          urduTitle: 'روزمرہ انگریزی بول چال کے موضوعات',
+          badgeText: '${_viewModel.filteredCategories.length} Topics',
+          gradient: AppColors.conversationGradient,
+          headerBottom: PremiumSearchField(
+            controller: _searchController,
+            onChanged: _viewModel.search,
+            onClear: () {
+              _searchController.clear();
+              _viewModel.search('');
+            },
+            hintText: 'Search situations (Hospital, Airport, ہوائی اڈہ)...',
+            accentColor: AppColors.sky,
+          ),
+          body: _viewModel.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _viewModel.filteredCategories.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No conversation topics found',
+                        style: TextStyle(color: AppColors.textLight),
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                      itemCount: _viewModel.filteredCategories.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final cat = _viewModel.filteredCategories[index];
+                        return GlassCard(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    ConversationDetailScreen(category: cat),
+                              ),
+                            );
+                          },
+                          padding: const EdgeInsets.all(15),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 52,
+                                height: 52,
+                                decoration: BoxDecoration(
+                                  gradient: AppColors.conversationGradient,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.sky.withAlpha(65),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
                                     ),
                                   ],
                                 ),
-                              );
-                            },
+                                child: Icon(
+                                  _getCategoryIcon(cat.id - 1),
+                                  color: Colors.white,
+                                  size: 25,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 7,
+                                            vertical: 2,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.sky.withAlpha(22),
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                          ),
+                                          child: Text(
+                                            'Topic #${cat.id}',
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w800,
+                                              color: AppColors.sky,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      cat.englishName,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w800,
+                                        color: AppColors.textDark,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      cat.urduName,
+                                      style: const TextStyle(
+                                        fontSize: 13.5,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.urduGreen,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  color: AppColors.sky.withAlpha(20),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.arrow_forward_rounded,
+                                  size: 16,
+                                  color: AppColors.sky,
+                                ),
+                              ),
+                            ],
                           ),
-              ),
-            ],
-          );
-        },
-      ),
+                        );
+                      },
+                    ),
+        );
+      },
     );
   }
 }

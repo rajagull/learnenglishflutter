@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../core/services/speech_service.dart';
 import '../../../core/services/tts_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -362,12 +363,20 @@ class _AiAgentCallScreenState extends State<AiAgentCallScreen>
     final isAiSpeaking = _voiceState == CallVoiceState.aiSpeaking;
     final isThinking = _voiceState == CallVoiceState.aiThinking;
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF071318),
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color(0xFF0B2229),
-        titleSpacing: 0,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.light,
+        systemNavigationBarContrastEnforced: false,
+      ),
+      child: Scaffold(
+        backgroundColor: const Color(0xFF071318),
+        appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white),
+          backgroundColor: const Color(0xFF0B2229),
+          titleSpacing: 0,
         title: Row(
           children: [
             Container(
@@ -908,6 +917,7 @@ class _AiAgentCallScreenState extends State<AiAgentCallScreen>
           ),
         ],
       ),
+    ),
     );
   }
 

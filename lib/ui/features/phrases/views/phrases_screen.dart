@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/services/share_helper.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/glass_card.dart';
+import '../../../core/widgets/premium_scaffold.dart';
 import '../../../core/widgets/speak_button.dart';
 
 class DailyPhrase {
@@ -131,131 +132,139 @@ class _PhrasesScreenState extends State<PhrasesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Essential Everyday Phrases',
-              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
-            ),
-            Text(
-              'اہم ترین روزمرہ انگریزی جملے اور بول چال',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 12,
-                color: AppColors.urduGreen,
+    return PremiumScaffold(
+      title: 'Essential Everyday Phrases',
+      urduTitle: 'اہم ترین روزمرہ انگریزی جملے اور بول چال',
+      badgeText: 'Daily Use',
+      gradient: AppColors.phrasesGradient,
+      headerBottom: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: _categories.map((cat) {
+            final isSelected = cat == _selectedCategory;
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: () => setState(() => _selectedCategory = cat),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? Colors.white
+                        : Colors.white.withAlpha(30),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.white
+                          : Colors.white.withAlpha(60),
+                    ),
+                  ),
+                  child: Text(
+                    cat,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: isSelected ? AppColors.sky : Colors.white,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ],
+            );
+          }).toList(),
         ),
       ),
-      body: Column(
-        children: [
-          // Category selector chips
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: _categories.map((cat) {
-                final isSelected = cat == _selectedCategory;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    selected: isSelected,
-                    label: Text(cat),
-                    selectedColor: AppColors.sky.withAlpha(50),
-                    onSelected: (_) => setState(() => _selectedCategory = cat),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              itemCount: _filteredPhrases.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final phrase = _filteredPhrases[index];
-                return GlassCard(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: AppColors.sky.withAlpha(25),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              phrase.category,
-                              style: const TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.sky,
-                              ),
-                            ),
+      body: ListView.separated(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 24),
+        itemCount: _filteredPhrases.length,
+        separatorBuilder: (context, index) => const SizedBox(height: 12),
+        itemBuilder: (context, index) {
+          final phrase = _filteredPhrases[index];
+          return GlassCard(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.sky.withAlpha(25),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        phrase.category,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.sky,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    SpeakButton(
+                      text: phrase.english,
+                      size: 18,
+                      color: AppColors.sky,
+                      backgroundColor: AppColors.sky.withAlpha(22),
+                    ),
+                    const SizedBox(width: 6),
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(10),
+                        onTap: () => _sharePhrase(phrase),
+                        child: const Padding(
+                          padding: EdgeInsets.all(6.0),
+                          child: Icon(
+                            Icons.share_outlined,
+                            size: 18,
+                            color: AppColors.textLight,
                           ),
-                          const Spacer(),
-                          SpeakButton(text: phrase.english, size: 18, color: AppColors.sky),
-                          const SizedBox(width: 6),
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(10),
-                              onTap: () => _sharePhrase(phrase),
-                              child: const Padding(
-                                padding: EdgeInsets.all(6.0),
-                                child: Icon(
-                                  Icons.share_outlined,
-                                  size: 18,
-                                  color: AppColors.textLight,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        phrase.english,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textDark,
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        phrase.urdu,
-                        textDirection: TextDirection.rtl,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.urduGreen,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        phrase.roman,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontStyle: FontStyle.italic,
-                          color: AppColors.textLight,
-                        ),
-                      ),
-                    ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  phrase.english,
+                  style: const TextStyle(
+                    fontSize: 16.5,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textDark,
                   ),
-                );
-              },
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  phrase.urdu,
+                  textDirection: TextDirection.rtl,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.urduGreen,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  phrase.roman,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                    color: AppColors.textLight,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

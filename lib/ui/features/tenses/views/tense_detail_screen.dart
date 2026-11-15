@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../data/models/tense_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/glass_card.dart';
+import '../../../core/widgets/premium_scaffold.dart';
 import '../../../core/widgets/speak_button.dart';
 import '../view_models/tenses_view_model.dart';
 
@@ -42,19 +43,19 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
     required IconData icon,
   }) {
     return GlassCard(
-      border: Border.all(color: color.withAlpha(50), width: 1.2),
+      border: Border.all(color: color.withAlpha(55), width: 1.3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(9),
                 decoration: BoxDecoration(
-                  color: color.withAlpha(25),
-                  borderRadius: BorderRadius.circular(10),
+                  color: color.withAlpha(24),
+                  borderRadius: BorderRadius.circular(11),
                 ),
-                child: Icon(icon, color: color, size: 20),
+                child: Icon(icon, color: color, size: 21),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -72,8 +73,8 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
                     Text(
                       urduTitle,
                       style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w700,
                         color: AppColors.urduGreen,
                       ),
                     ),
@@ -86,7 +87,7 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
           Text(
             englishRule,
             style: const TextStyle(
-              fontSize: 14,
+              fontSize: 14.5,
               fontWeight: FontWeight.w600,
               color: AppColors.textDark,
               height: 1.4,
@@ -99,9 +100,9 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.right,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 14.5,
                 color: AppColors.urduGreen,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 height: 1.5,
               ),
             ),
@@ -115,33 +116,32 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
   Widget build(BuildContext context) {
     final tense = widget.tenseCategory;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              tense.englishName,
-              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
-            ),
-            Text(
-              tense.urduName,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 12,
-                color: AppColors.urduGreen,
-              ),
-            ),
-          ],
+    return PremiumScaffold(
+      title: tense.englishName,
+      urduTitle: tense.urduName,
+      gradient: AppColors.tensesGradient,
+      headerBottom: Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withAlpha(28),
+          borderRadius: BorderRadius.circular(14),
         ),
-        bottom: TabBar(
+        child: TabBar(
           controller: _tabController,
-          labelColor: AppColors.primary,
-          unselectedLabelColor: AppColors.textLight,
-          indicatorColor: AppColors.primary,
+          indicatorSize: TabBarIndicatorSize.tab,
+          dividerColor: Colors.transparent,
+          indicator: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          labelColor: AppColors.purple,
+          unselectedLabelColor: Colors.white,
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: 13,
+          ),
           tabs: const [
-            Tab(icon: Icon(Icons.menu_book_rounded), text: 'Rules & Formula'),
-            Tab(icon: Icon(Icons.format_quote_rounded), text: 'Sentence Examples'),
+            Tab(text: 'Rules & Formulas'),
+            Tab(text: 'Sentence Examples'),
           ],
         ),
       ),
@@ -150,25 +150,28 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
         children: [
           // Tab 1: Rules
           ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
             children: [
-              // Definition Card
               GlassCard(
-                backgroundColor: AppColors.primary.withAlpha(10),
-                border: Border.all(color: AppColors.primary.withAlpha(40)),
+                backgroundColor: Colors.white,
+                border: Border.all(color: AppColors.purple.withAlpha(45)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Row(
                       children: [
-                        Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 20),
+                        Icon(
+                          Icons.info_outline_rounded,
+                          color: AppColors.purple,
+                          size: 20,
+                        ),
                         SizedBox(width: 8),
                         Text(
                           'Definition & Overview',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.primary,
+                            color: AppColors.purple,
                           ),
                         ),
                       ],
@@ -177,7 +180,7 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
                     Text(
                       tense.definitionEnglish,
                       style: const TextStyle(
-                        fontSize: 14,
+                        fontSize: 14.5,
                         color: AppColors.textDark,
                         height: 1.4,
                       ),
@@ -188,9 +191,9 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
                         tense.definitionUrdu,
                         textDirection: TextDirection.rtl,
                         style: const TextStyle(
-                          fontSize: 14,
+                          fontSize: 14.5,
                           color: AppColors.urduGreen,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                           height: 1.5,
                         ),
                       ),
@@ -199,10 +202,8 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
                 ),
               ),
               const SizedBox(height: 14),
-
-              // Positive Rule
               _buildRuleCard(
-                title: 'Affirmative / Positive Sentence Rule',
+                title: 'Affirmative / Positive Rule',
                 urduTitle: 'مثبت جملہ بنانے کا قاعدہ',
                 englishRule: tense.positiveRuleEnglish,
                 urduRule: tense.positiveRuleUrdu,
@@ -210,8 +211,6 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
                 icon: Icons.check_circle_outline_rounded,
               ),
               const SizedBox(height: 14),
-
-              // Negative Rule
               _buildRuleCard(
                 title: 'Negative Sentence Rule',
                 urduTitle: 'منفی جملہ بنانے کا قاعدہ',
@@ -221,8 +220,6 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
                 icon: Icons.remove_circle_outline_rounded,
               ),
               const SizedBox(height: 14),
-
-              // Interrogative Rule
               _buildRuleCard(
                 title: 'Interrogative / Question Rule',
                 urduTitle: 'سوالیہ جملہ بنانے کا قاعدہ',
@@ -249,9 +246,10 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
               }
 
               return ListView.separated(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
                 itemCount: _viewModel.examples.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 14),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 14),
                 itemBuilder: (context, index) {
                   final ex = _viewModel.examples[index];
                   return GlassCard(
@@ -260,23 +258,24 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
-                            color: AppColors.primaryLight.withAlpha(30),
+                            color: AppColors.purple.withAlpha(22),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
                             'Example #${index + 1}',
                             style: const TextStyle(
                               fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.primary,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.purple,
                             ),
                           ),
                         ),
                         const SizedBox(height: 12),
-
-                        // Positive
                         _buildSentenceRow(
                           label: 'Positive (+)',
                           english: ex.positiveEnglish,
@@ -284,8 +283,6 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
                           color: AppColors.emerald,
                         ),
                         const SizedBox(height: 10),
-
-                        // Negative
                         _buildSentenceRow(
                           label: 'Negative (-)',
                           english: ex.negativeEnglish,
@@ -293,8 +290,6 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
                           color: AppColors.coral,
                         ),
                         const SizedBox(height: 10),
-
-                        // Interrogative
                         _buildSentenceRow(
                           label: 'Question (?)',
                           english: ex.interrogativeEnglish,
@@ -321,11 +316,11 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
   }) {
     if (english.isEmpty && urdu.isEmpty) return const SizedBox.shrink();
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withAlpha(15),
+        color: color.withAlpha(16),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withAlpha(35)),
+        border: Border.all(color: color.withAlpha(42)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,8 +330,8 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w800,
                   color: color,
                 ),
               ),
@@ -353,14 +348,14 @@ class _TenseDetailScreenState extends State<TenseDetailScreen>
               color: AppColors.textDark,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 3),
           Text(
             urdu,
             textDirection: TextDirection.rtl,
             textAlign: TextAlign.right,
             style: const TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
               color: AppColors.urduGreen,
             ),
           ),

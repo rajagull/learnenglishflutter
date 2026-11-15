@@ -5,6 +5,7 @@ import '../../../../data/repositories/vocabulary_repository.dart';
 import '../../../core/services/tts_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/glass_card.dart';
+import '../../../core/widgets/premium_scaffold.dart';
 import '../../../core/widgets/speak_button.dart';
 
 enum QuizType { singularPlural, idioms, vocabulary }
@@ -119,223 +120,189 @@ class _PracticeQuizScreenState extends State<PracticeQuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Interactive English Quiz',
-              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
+    return PremiumScaffold(
+      title: 'Interactive English Quiz',
+      urduTitle: 'خود کار مشق اور کوئز',
+      badgeText: 'Score: $_score/$_totalAttempts',
+      gradient: AppColors.quizGradient,
+      actions: [
+        IconButton(
+          tooltip: 'Reset Score',
+          style: IconButton.styleFrom(
+            backgroundColor: Colors.white.withAlpha(30),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-            Text(
-              'خود کار مشق اور کوئز',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 12,
-                color: AppColors.urduGreen,
-              ),
-            ),
-          ],
+          ),
+          icon: const Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
+          onPressed: () {
+            setState(() {
+              _score = 0;
+              _totalAttempts = 0;
+            });
+            _loadNextQuestion();
+          },
         ),
-      ),
-      body: Column(
+      ],
+      headerBottom: Row(
         children: [
-          // Mode switch tabs
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                _buildModeChip('Singular/Plural', QuizType.singularPlural),
-                const SizedBox(width: 8),
-                _buildModeChip('Idioms', QuizType.idioms),
-                const SizedBox(width: 8),
-                _buildModeChip('Vocabulary', QuizType.vocabulary),
-              ],
-            ),
-          ),
-
-          // Score bar
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              gradient: AppColors.heroGradient,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.stars_rounded, color: Colors.amber, size: 24),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Score: $_score / $_totalAttempts',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-                TextButton.icon(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.white24,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  icon: const Icon(Icons.refresh, size: 16),
-                  label: const Text('Reset', style: TextStyle(fontSize: 12)),
-                  onPressed: () {
-                    setState(() {
-                      _score = 0;
-                      _totalAttempts = 0;
-                    });
-                    _loadNextQuestion();
-                  },
-                ),
-              ],
-            ),
-          ),
-
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _currentQuestion == null
-                    ? const Center(child: Text('Unable to load question'))
-                    : Padding(
-                        padding: const EdgeInsets.all(16.0),
+          _buildModeChip('Singular/Plural', QuizType.singularPlural),
+          const SizedBox(width: 8),
+          _buildModeChip('Idioms', QuizType.idioms),
+          const SizedBox(width: 8),
+          _buildModeChip('Vocabulary', QuizType.vocabulary),
+        ],
+      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _currentQuestion == null
+              ? const Center(child: Text('Unable to load question'))
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Question Card
+                      GlassCard(
+                        padding: const EdgeInsets.all(20),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Question Card
-                            GlassCard(
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    _currentQuestion!.promptUrdu,
-                                    textDirection: TextDirection.rtl,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.urduGreen,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    _currentQuestion!.prompt,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w800,
-                                      color: AppColors.textDark,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  SpeakButton(
-                                    text: _currentQuestion!.prompt,
-                                    color: AppColors.primary,
-                                  ),
-                                ],
+                            Text(
+                              _currentQuestion!.promptUrdu,
+                              textDirection: TextDirection.rtl,
+                              style: const TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.urduGreen,
                               ),
                             ),
-                            const SizedBox(height: 16),
-
-                            // Option choices
-                            Expanded(
-                              child: ListView.separated(
-                                itemCount: _currentQuestion!.options.length,
-                                separatorBuilder: (context, index) => const SizedBox(height: 10),
-                                itemBuilder: (context, index) {
-                                  final option = _currentQuestion!.options[index];
-                                  final isSelected = _selectedOption == option;
-                                  final isCorrect = option == _currentQuestion!.correctAnswer;
-
-                                  Color borderColor = AppColors.borderLight;
-                                  Color bgColor = Colors.white;
-                                  Color textColor = AppColors.textDark;
-
-                                  if (_hasAnswered) {
-                                    if (isCorrect) {
-                                      borderColor = AppColors.emerald;
-                                      bgColor = AppColors.emerald.withAlpha(30);
-                                      textColor = AppColors.emerald;
-                                    } else if (isSelected) {
-                                      borderColor = Colors.redAccent;
-                                      bgColor = Colors.redAccent.withAlpha(30);
-                                      textColor = Colors.redAccent;
-                                    }
-                                  }
-
-                                  return GlassCard(
-                                    onTap: () => _handleOptionSelect(option),
-                                    backgroundColor: bgColor,
-                                    border: Border.all(color: borderColor, width: 1.5),
-                                    padding: const EdgeInsets.all(16),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 30,
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            color: borderColor.withAlpha(20),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              String.fromCharCode(65 + index),
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w800,
-                                                color: textColor,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 14),
-                                        Expanded(
-                                          child: Text(
-                                            option,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
-                                              color: textColor,
-                                            ),
-                                          ),
-                                        ),
-                                        if (_hasAnswered && isCorrect)
-                                          const Icon(Icons.check_circle, color: AppColors.emerald)
-                                        else if (_hasAnswered && isSelected)
-                                          const Icon(Icons.cancel, color: Colors.redAccent),
-                                      ],
-                                    ),
-                                  );
-                                },
+                            const SizedBox(height: 8),
+                            Text(
+                              _currentQuestion!.prompt,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                color: AppColors.textDark,
                               ),
                             ),
-
-                            // Next button
-                            if (_hasAnswered)
-                              ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  backgroundColor: AppColors.primary,
-                                ),
-                                icon: const Icon(Icons.arrow_forward_rounded),
-                                label: const Text(
-                                  'Next Question',
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                                ),
-                                onPressed: _loadNextQuestion,
-                              ),
+                            const SizedBox(height: 12),
+                            SpeakButton(
+                              text: _currentQuestion!.prompt,
+                              color: AppColors.primary,
+                              backgroundColor: AppColors.primary.withAlpha(22),
+                            ),
                           ],
                         ),
                       ),
-          ),
-        ],
-      ),
+                      const SizedBox(height: 14),
+
+                      // Option choices
+                      Expanded(
+                        child: ListView.separated(
+                          itemCount: _currentQuestion!.options.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 10),
+                          itemBuilder: (context, index) {
+                            final option = _currentQuestion!.options[index];
+                            final isSelected = _selectedOption == option;
+                            final isCorrect =
+                                option == _currentQuestion!.correctAnswer;
+
+                            Color borderColor = AppColors.borderLight;
+                            Color bgColor = Colors.white;
+                            Color textColor = AppColors.textDark;
+
+                            if (_hasAnswered) {
+                              if (isCorrect) {
+                                borderColor = AppColors.emerald;
+                                bgColor = AppColors.emerald.withAlpha(25);
+                                textColor = AppColors.emerald;
+                              } else if (isSelected) {
+                                borderColor = Colors.redAccent;
+                                bgColor = Colors.redAccent.withAlpha(25);
+                                textColor = Colors.redAccent;
+                              }
+                            }
+
+                            return GlassCard(
+                              onTap: () => _handleOptionSelect(option),
+                              backgroundColor: bgColor,
+                              border:
+                                  Border.all(color: borderColor, width: 1.5),
+                              padding: const EdgeInsets.all(15),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 32,
+                                    height: 32,
+                                    decoration: BoxDecoration(
+                                      color: borderColor.withAlpha(25),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        String.fromCharCode(65 + index),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w900,
+                                          color: textColor,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 14),
+                                  Expanded(
+                                    child: Text(
+                                      option,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                        color: textColor,
+                                      ),
+                                    ),
+                                  ),
+                                  if (_hasAnswered && isCorrect)
+                                    const Icon(
+                                      Icons.check_circle_rounded,
+                                      color: AppColors.emerald,
+                                    )
+                                  else if (_hasAnswered && isSelected)
+                                    const Icon(
+                                      Icons.cancel_rounded,
+                                      color: Colors.redAccent,
+                                    ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+
+                      // Next button protected inside SafeArea via PremiumScaffold
+                      if (_hasAnswered) ...[
+                        const SizedBox(height: 8),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          icon: const Icon(Icons.arrow_forward_rounded),
+                          label: const Text(
+                            'Next Question',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          onPressed: _loadNextQuestion,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
     );
   }
 
@@ -343,7 +310,7 @@ class _PracticeQuizScreenState extends State<PracticeQuizScreen> {
     final isSelected = _selectedType == type;
     return Expanded(
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         onTap: () {
           if (_selectedType != type) {
             setState(() => _selectedType = type);
@@ -353,16 +320,19 @@ class _PracticeQuizScreenState extends State<PracticeQuizScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : AppColors.surfaceElevated,
-            borderRadius: BorderRadius.circular(12),
+            color: isSelected ? Colors.white : Colors.white.withAlpha(28),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isSelected ? Colors.white : Colors.white.withAlpha(55),
+            ),
           ),
           child: Center(
             child: Text(
               label,
               style: TextStyle(
                 fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: isSelected ? Colors.white : AppColors.textMedium,
+                fontWeight: FontWeight.w800,
+                color: isSelected ? AppColors.primaryDark : Colors.white,
               ),
             ),
           ),
