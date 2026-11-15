@@ -1,0 +1,89 @@
+name: Build & Release Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      tailscale_target:
+        description: 'Optional Tailscale device name or IP to send APK via Taildrop (requires TS_AUTHKEY secret)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Release APK
+        run: flutter build apk --release
+
+      - name: Prepare APK file
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk learn-english-release.apk
+          ls -lh learn-english-release.apk
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: learn-english-release-apk
+          path: learn-english-release.apk
+
+      - name: Publish to GitHub Releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="latest-apk"
+          TITLE="Learn English APK (Build #${{ github.run_number }})"
+          NOTES="Automated Android Release APK built from commit ${{ github.sha }}."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" learn-english-release.apk --clobber
+            gh release edit "$TAG" --title "$TITLE" --notes "$NOTES"
+          else
+            gh release create "$TAG" learn-english-release.apk --title "$TITLE" --notes "$NOTES" --latest
+          fi
+
+      - name: Check if Tailscale Auth Key is configured
+        id: ts_check
+        env:
+          TS_AUTHKEY: ${{ secrets.TS_AUTHKEY }}
+          TS_TARGET: ${{ github.event.inputs.tailscale_target || vars.TAILSCALE_MOBILE_DEVICE }}
+        run: |
+          if [ -n "$TS_AUTHKEY" ] && [ -n "$TS_TARGET" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "target=$TS_TARGET" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Connect to Tailscale
+        if: steps.ts_check.outputs.enabled == 'true'
+        uses: tailscale/github-action@v3
+        with:
+          authkey: ${{ secrets.TS_AUTHKEY }}
+
+      - name: Send APK to Mobile via Tailscale (Taildrop)
+        if: steps.ts_check.outputs.enabled == 'true'
+        run: |
+          tailscale file cp learn-english-release.apk "${{ steps.ts_check.outputs.target }}:"
