@@ -7,7 +7,7 @@ set -euo pipefail
 DEVICE="${1:-}"
 
 echo "==> Building Release APK..."
-flutter build apk --release
+flutter build apk --release --android-skip-build-dependency-validation
 
 APK_PATH="build/app/outputs/flutter-apk/app-release.apk"
 OUT_APK="build/app/outputs/flutter-apk/learn-english-release.apk"
