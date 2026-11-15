@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
+import '../../../core/services/share_helper.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/speak_button.dart';
@@ -124,7 +124,7 @@ class _PhrasesScreenState extends State<PhrasesScreen> {
   }
 
   void _sharePhrase(DailyPhrase phrase) {
-    SharePlus.share(
+    ShareHelper.shareText(
       'Phrase: ${phrase.english}\nUrdu: ${phrase.urdu}\n(${phrase.roman})\n\nLearn English with Learn English App!',
     );
   }
@@ -176,7 +176,7 @@ class _PhrasesScreenState extends State<PhrasesScreen> {
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               itemCount: _filteredPhrases.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 final phrase = _filteredPhrases[index];
                 return GlassCard(

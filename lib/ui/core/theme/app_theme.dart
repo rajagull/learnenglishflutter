@@ -4,7 +4,9 @@ import 'app_colors.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
-    final base = ThemeData(
+    final baseTextTheme = GoogleFonts.plusJakartaSansTextTheme();
+
+    return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: ColorScheme.fromSeed(
@@ -14,10 +16,7 @@ class AppTheme {
         surface: AppColors.surfaceLight,
       ),
       scaffoldBackgroundColor: AppColors.bgLight,
-    );
-
-    return base.copyWith(
-      textTheme: GoogleFonts.plusJakartaSansTextTheme(base.textTheme).copyWith(
+      textTheme: baseTextTheme.copyWith(
         displayLarge: GoogleFonts.plusJakartaSans(
           fontSize: 32,
           fontWeight: FontWeight.w800,

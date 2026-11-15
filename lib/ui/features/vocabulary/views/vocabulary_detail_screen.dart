@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../../../data/models/vocabulary_model.dart';
+import '../../../core/services/share_helper.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/speak_button.dart';
@@ -33,7 +33,7 @@ class _VocabularyDetailScreenState extends State<VocabularyDetailScreen> {
   }
 
   void _shareItem(VocabularyItem item) {
-    SharePlus.share(
+    ShareHelper.shareText(
       'Word: ${item.english}\nUrdu: ${item.urdu}\nPronunciation: ${item.roman}\n\nLearn English with Learn English App!',
     );
   }
@@ -101,7 +101,7 @@ class _VocabularyDetailScreenState extends State<VocabularyDetailScreen> {
                               vertical: 8,
                             ),
                             itemCount: _viewModel.filteredItems.length,
-                            separatorBuilder: (_, __) =>
+                            separatorBuilder: (context, index) =>
                                 const SizedBox(height: 10),
                             itemBuilder: (context, index) {
                               final item = _viewModel.filteredItems[index];

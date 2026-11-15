@@ -91,7 +91,7 @@ class _SingularPluralScreenState extends State<SingularPluralScreen> {
                               vertical: 8,
                             ),
                             itemCount: _viewModel.items.length,
-                            separatorBuilder: (_, __) =>
+                            separatorBuilder: (context, index) =>
                                 const SizedBox(height: 10),
                             itemBuilder: (context, index) {
                               final pair = _viewModel.items[index];

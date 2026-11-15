@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../data/models/vocabulary_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../view_models/vocabulary_view_model.dart';
@@ -133,7 +132,7 @@ class _VocabularyCategoriesScreenState
                               vertical: 8,
                             ),
                             itemCount: _viewModel.filteredCategories.length,
-                            separatorBuilder: (_, __) =>
+                            separatorBuilder: (context, index) =>
                                 const SizedBox(height: 10),
                             itemBuilder: (context, index) {
                               final cat = _viewModel.filteredCategories[index];

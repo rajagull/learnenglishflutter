@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../core/services/tts_service.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/glass_card.dart';
 
 class AiAgentCallScreen extends StatefulWidget {
   const AiAgentCallScreen({super.key});

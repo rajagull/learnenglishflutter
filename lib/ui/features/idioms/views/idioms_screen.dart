@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../../../data/models/idiom_model.dart';
+import '../../../core/services/share_helper.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/speak_button.dart';
@@ -41,7 +41,7 @@ class _IdiomsScreenState extends State<IdiomsScreen> {
   }
 
   void _shareIdiom(IdiomItem idiom) {
-    SharePlus.share(
+    ShareHelper.shareText(
       'Idiom: ${idiom.displayEnglish}\nUrdu: ${idiom.urdu}\n\nLearn English with Learn English App!',
     );
   }
@@ -111,7 +111,7 @@ class _IdiomsScreenState extends State<IdiomsScreen> {
                             ),
                             itemCount: _viewModel.idioms.length +
                                 (_viewModel.isLoadingMore ? 1 : 0),
-                            separatorBuilder: (_, __) =>
+                            separatorBuilder: (context, index) =>
                                 const SizedBox(height: 12),
                             itemBuilder: (context, index) {
                               if (index >= _viewModel.idioms.length) {

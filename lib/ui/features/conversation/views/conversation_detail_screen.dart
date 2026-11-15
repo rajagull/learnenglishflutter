@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../../../data/models/conversation_model.dart';
+import '../../../core/services/share_helper.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/speak_button.dart';
@@ -32,7 +32,7 @@ class _ConversationDetailScreenState extends State<ConversationDetailScreen> {
   }
 
   void _shareDialogue(ConversationDetail item) {
-    SharePlus.share(
+    ShareHelper.shareText(
       '${item.english}\n${item.urdu}\n(${item.roman})\n\nLearn English with Learn English App!',
     );
   }
@@ -78,7 +78,7 @@ class _ConversationDetailScreenState extends State<ConversationDetailScreen> {
           return ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             itemCount: _viewModel.currentDetails.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final item = _viewModel.currentDetails[index];
               final hasSpeaker = item.speaker.isNotEmpty;

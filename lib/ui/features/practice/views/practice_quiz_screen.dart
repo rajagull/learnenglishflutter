@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../../data/repositories/idiom_repository.dart';
 import '../../../../data/repositories/singular_plural_repository.dart';
@@ -249,7 +248,7 @@ class _PracticeQuizScreenState extends State<PracticeQuizScreen> {
                             Expanded(
                               child: ListView.separated(
                                 itemCount: _currentQuestion!.options.length,
-                                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                                separatorBuilder: (context, index) => const SizedBox(height: 10),
                                 itemBuilder: (context, index) {
                                   final option = _currentQuestion!.options[index];
                                   final isSelected = _selectedOption == option;

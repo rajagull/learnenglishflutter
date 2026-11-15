@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../data/models/conversation_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../view_models/conversation_view_model.dart';
@@ -122,7 +121,7 @@ class _ConversationCategoriesScreenState
                               vertical: 8,
                             ),
                             itemCount: _viewModel.filteredCategories.length,
-                            separatorBuilder: (_, __) =>
+                            separatorBuilder: (context, index) =>
                                 const SizedBox(height: 10),
                             itemBuilder: (context, index) {
                               final cat = _viewModel.filteredCategories[index];

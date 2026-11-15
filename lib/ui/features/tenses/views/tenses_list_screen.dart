@@ -89,7 +89,7 @@ class _TensesListScreenState extends State<TensesListScreen> {
                 child: ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   itemCount: _viewModel.visibleCategories.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  separatorBuilder: (context, index) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final item = _viewModel.visibleCategories[index];
                     return GlassCard(

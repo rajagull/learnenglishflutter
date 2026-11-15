@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../../../data/models/dictionary_model.dart';
+import '../../../core/services/share_helper.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/speak_button.dart';
@@ -32,7 +32,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
 
   void _shareWord(DictionaryWord word) {
     final meaningsStr = word.meanings.map((m) => '${m.mean} (${m.roman})').join(', ');
-    SharePlus.share(
+    ShareHelper.shareText(
       'Word: ${word.word}\nUrdu: $meaningsStr\nDefinition: ${word.definition}\n\nLearn English App!',
     );
   }
@@ -274,7 +274,7 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
                         : ListView.separated(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             itemCount: _viewModel.words.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: 10),
+                            separatorBuilder: (context, index) => const SizedBox(height: 10),
                             itemBuilder: (context, index) {
                               final word = _viewModel.words[index];
                               final primaryMeaning = word.meanings.isNotEmpty
